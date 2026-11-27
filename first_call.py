@@ -1,25 +1,6 @@
-import os
-from dotenv import load_dotenv
-from openai import OpenAI
-import time
+from llm import ask_llm
 
-load_dotenv()
-
-model = os.getenv("OPENAI_MODEL")
-
-client = OpenAI()
-
-start = time.perf_counter()
-response = client.responses.create(
-    model=model,
+ask_llm(
+    "Explain what a token is in one sentence.",
     instructions="Answer like a wizard.",
-    input="Explain what a token is in one sentence",
 )
-latency = time.perf_counter() - start
-
-print(response.output_text)
-print(f"Input tokens: {response.usage.input_tokens}")
-print(f"Output tokens: {response.usage.output_tokens}")
-print(f"Total tokens: {response.usage.total_tokens}")
-print(f"Latency: {latency:.2f} seconds")
-#print(response)

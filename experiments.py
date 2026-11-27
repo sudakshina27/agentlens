@@ -1,28 +1,16 @@
-import os
-from dotenv import load_dotenv
-from openai import OpenAI
-import time
+from llm import ask_llm
 
-load_dotenv()
+# Experiment 1: same question twice -> different answers (sampling)
+# ask_llm("Describe the ocean in one sentence.")
+# ask_llm("Describe the ocean in one sentence.")
 
-model = os.getenv("OPENAI_MODEL")
+# Experiment 2: two separate calls -> the name is forgotten (stateless API)
+# ask_llm("My name is Sudakshina.")
+# ask_llm("What's my name?")
 
-client = OpenAI()
-
-start = time.perf_counter()
-response = client.responses.create(
-    model=model,
-    input=[
-        {"role": "user", "content": "My name is Sudakshina."},
-        {"role": "assistant", "content": "Nice to meet you, Sudakshina!"},
-        {"role": "user", "content": "What's my name?"},
-    ],
-)
-latency = time.perf_counter() - start
-
-print(response.output_text)
-print(f"Input tokens: {response.usage.input_tokens}")
-print(f"Output tokens: {response.usage.output_tokens}")
-print(f"Total tokens: {response.usage.total_tokens}")
-print(f"Latency: {latency:.2f} seconds")
-#print(response)
+# Experiment 3: full history in one request -> the name is remembered
+ask_llm([
+    {"role": "user", "content": "My name is Sudakshina."},
+    {"role": "assistant", "content": "Nice to meet you, Sudakshina!"},
+    {"role": "user", "content": "What's my name?"},
+])
